@@ -11,42 +11,48 @@ import {
 } from './ui/navigation-menu';
 import { cn } from '../lib/utils';
 
-const ListItem = React.forwardRef<
-  React.ElementRef<'a'>,
-  React.ComponentPropsWithoutRef<'a'>
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-            className,
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
+interface ListItem extends React.ComponentPropsWithoutRef<'a'> {
+  title: string;
+  to: string;
+}
+
+const ListItem = React.forwardRef<HTMLAnchorElement, ListItem>(
+  ({ className, title, children, to, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <Link
+            ref={ref}
+            to={to}
+            className={cn(
+              'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+              className
+            )}
+            {...props}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+              {children}
+            </p>
+          </Link>
+        </NavigationMenuLink>
+      </li>
+    );
+  }
+);
+
 ListItem.displayName = 'ListItem';
 
-const services: { title: string; href: string; description: string }[] = [
+const services: { title: string; to: string; description: string }[] = [
   {
     title: 'Biomagnetismo',
-    href: '/biomagnetismo',
+    to: '/biomagnetismo',
     description:
       'A modal dialog that interrupts the user with important content and expects a response.',
   },
   {
     title: 'Terapia Manual',
-    href: '/terapiasmanual',
+    to: '/terapiasmanual',
     description:
       'For sighted users to preview content available behind a link.',
   },
@@ -89,13 +95,13 @@ export function DesktopMenu() {
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Introduction">
+              <ListItem to="/docs" title="Introduction">
                 Re-usable components built using Radix UI and Tailwind CSS.
               </ListItem>
-              <ListItem href="/docs/installation" title="Installation">
+              <ListItem to="/docs/installation" title="Installation">
                 How to install dependencies and structure your app.
               </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
+              <ListItem to="/docs/primitives/typography" title="Typography">
                 Styles for headings, paragraphs, lists...etc
               </ListItem>
             </ul>
@@ -110,7 +116,7 @@ export function DesktopMenu() {
                 <ListItem
                   key={service.title}
                   title={service.title}
-                  href={service.href}
+                  to={service.to}
                 >
                   {service.description}
                 </ListItem>
